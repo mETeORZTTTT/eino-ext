@@ -11,7 +11,7 @@ an active file reference belonging to the service being called.
 | --- | --- | --- |
 | `components/model/ark` | Responses | Image, video, audio, file |
 | `components/model/agenticark` | Responses | Image, video, audio, file |
-| `components/model/agenticopenai` | Responses | Image and file |
+| `components/model/agenticopenai` | Responses | Image and file in user inputs and function tool outputs |
 | `libs/acl/openai` | Agentic-to-Message bridge | Preserve image/audio/video IDs; Chat encoding explicitly rejects unsupported FileID |
 
 These are API encoding capabilities, not a guarantee that every hosted model
@@ -49,7 +49,9 @@ replace them with released upstream module versions before upstream submission.
 
 Tests cover the actual SDK JSON, source conflicts, old URL behavior, the
 Agentic bridge, and real Generate/Stream HTTP requests to a local test server.
-The local server returns a file-expiry error to check that it reaches callers.
+The OpenAI request test also executes an enhanced tool through the core
+AgenticToolsNode and verifies its image/file references in the final function
+call output. The local server returns a file-expiry error to check that it reaches callers.
 No live-provider request or billable model invocation is made by these tests.
 
 ```sh

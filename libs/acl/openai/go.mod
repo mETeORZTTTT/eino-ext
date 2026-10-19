@@ -48,4 +48,4 @@ require (
 )
 
 // Self-review only; replace with a released upstream version before submission.
-replace github.com/cloudwego/eino => github.com/mETeORZTTTT/eino v0.0.0-20261019062538-0c67a01d7611
+replace github.com/cloudwego/eino => github.com/mETeORZTTTT/eino v0.0.0-20261019074619-ff031de9b281

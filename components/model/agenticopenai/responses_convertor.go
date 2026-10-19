@@ -723,11 +723,12 @@ func functionToolResultContentToOutput(content []*schema.FunctionToolResultConte
 			})
 
 		case schema.FunctionToolResultContentBlockTypeImage:
-			imageURL, err := resolveURL(block.Image.URL, block.Image.Base64Data, block.Image.MIMEType)
+			imageURL, err := resolveFileOrURL(block.Image.FileID, block.Image.URL, block.Image.Base64Data, block.Image.MIMEType)
 			if err != nil {
 				return responses.ResponseInputItemFunctionCallOutputOutputUnionParam{}, err
 			}
 			imgParam := &responses.ResponseInputImageContentParam{
+				FileID:   newOpenaiStrOpt(block.Image.FileID),
 				ImageURL: newOpenaiStrOpt(imageURL),
 			}
 			if block.Image.Detail != "" {
@@ -738,15 +739,19 @@ func functionToolResultContentToOutput(content []*schema.FunctionToolResultConte
 			})
 
 		case schema.FunctionToolResultContentBlockTypeFile:
-			fileURL, err := resolveURL(block.File.URL, block.File.Base64Data, block.File.MIMEType)
+			fileURL, err := resolveFileOrURL(block.File.FileID, block.File.URL, block.File.Base64Data, block.File.MIMEType)
 			if err != nil {
 				return responses.ResponseInputItemFunctionCallOutputOutputUnionParam{}, err
 			}
+			fileParam := &responses.ResponseInputFileContentParam{
+				FileID:  newOpenaiStrOpt(block.File.FileID),
+				FileURL: newOpenaiStrOpt(fileURL),
+			}
+			if block.File.FileID == "" {
+				fileParam.Filename = newOpenaiStrOpt(block.File.Name)
+			}
 			items = append(items, responses.ResponseFunctionCallOutputItemUnionParam{
-				OfInputFile: &responses.ResponseInputFileContentParam{
-					FileURL:  newOpenaiStrOpt(fileURL),
-					Filename: newOpenaiStrOpt(block.File.Name),
-				},
+				OfInputFile: fileParam,
 			})
 
 		default:
