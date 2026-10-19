@@ -1498,6 +1498,17 @@ func convUserInputMultiContentToContentItems(parts []schema.MessageInputPart) ([
 	return items, nil
 }
 func convMsgInputImageToResponseContentItem(image *schema.MessageInputImage) (*responses.ContentItem, error) {
+	if image.FileID != nil {
+		if err := validateFileReference(image.MessagePartCommon); err != nil {
+			return nil, err
+		}
+		content := &responses.ContentItemImage{Type: responses.ContentItemType_input_image, FileId: image.FileID}
+
+		if err := toContentItemImageDetail(content, image.Detail); err != nil {
+			return nil, err
+		}
+		return &responses.ContentItem{Union: &responses.ContentItem_Image{Image: content}}, nil
+	}
 	imageURL, err := convMessagePartCommonToURL(image.MessagePartCommon)
 	if err != nil {
 		return nil, fmt.Errorf("convert message input image failed err: %w", err)
@@ -1518,6 +1529,17 @@ func convMsgInputImageToResponseContentItem(image *schema.MessageInputImage) (*r
 }
 
 func convMsgInputVideoToResponseContentItem(video *schema.MessageInputVideo) (*responses.ContentItem, error) {
+	if video.FileID != nil {
+		if err := validateFileReference(video.MessagePartCommon); err != nil {
+			return nil, err
+		}
+		content := &responses.ContentItemVideo{Type: responses.ContentItemType_input_video, FileId: video.FileID}
+
+		if fps := GetInputVideoFPS(video); fps != nil {
+			content.Fps = ptrOf(float32(*fps))
+		}
+		return &responses.ContentItem{Union: &responses.ContentItem_Video{Video: content}}, nil
+	}
 	videoURL, err := convMessagePartCommonToURL(video.MessagePartCommon)
 	if err != nil {
 		return nil, fmt.Errorf("convert message input video failed err: %w", err)
@@ -1543,6 +1565,13 @@ func convMsgInputVideoToResponseContentItem(video *schema.MessageInputVideo) (*r
 }
 
 func convMsgInputAudioToResponseContentItem(audio *schema.MessageInputAudio) (*responses.ContentItem, error) {
+	if audio.FileID != nil {
+		if err := validateFileReference(audio.MessagePartCommon); err != nil {
+			return nil, err
+		}
+		content := &responses.ContentItemAudio{Type: responses.ContentItemType_input_audio, FileId: audio.FileID}
+		return &responses.ContentItem{Union: &responses.ContentItem_Audio{Audio: content}}, nil
+	}
 	audioURL, err := convMessagePartCommonToURL(audio.MessagePartCommon)
 	if err != nil {
 		return nil, fmt.Errorf("convert message input audio failed err: %w", err)
@@ -1562,6 +1591,13 @@ func convMsgInputAudioToResponseContentItem(audio *schema.MessageInputAudio) (*r
 }
 
 func convMsgInputFileToResponseContentItem(file *schema.MessageInputFile) (*responses.ContentItem, error) {
+	if file.FileID != nil {
+		if err := validateFileReference(file.MessagePartCommon); err != nil {
+			return nil, err
+		}
+		content := &responses.ContentItemFile{Type: responses.ContentItemType_input_file, FileId: file.FileID}
+		return &responses.ContentItem{Union: &responses.ContentItem_File{File: content}}, nil
+	}
 	var (
 		fileURL  string
 		err      error
@@ -1803,4 +1839,18 @@ func (cm *ResponsesAPIChatModel) CreatePrefixCache(ctx context.Context, prefix [
 	}
 
 	return info, nil
+}
+
+// validateFileReference leaves existing URL/Base64 behavior unchanged.
+func validateFileReference(common schema.MessagePartCommon) error {
+	if common.FileID == nil {
+		return nil
+	}
+	if strings.TrimSpace(*common.FileID) == "" {
+		return fmt.Errorf("FileID must not be empty")
+	}
+	if common.URL != nil || common.Base64Data != nil {
+		return fmt.Errorf("FileID is mutually exclusive with URL and Base64Data")
+	}
+	return nil
 }
