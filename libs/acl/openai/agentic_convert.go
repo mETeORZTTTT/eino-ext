@@ -88,12 +88,12 @@ func messageToAgenticMessage(msg *schema.Message) (*schema.AgenticMessage, error
 }
 
 type chunkConverter struct {
-	curIndex              int
-	lastContentType       schema.ContentBlockType
-	lastContentPartIndex  int
-	lastToolCallIndex     int
-	started               bool
-	inToolCalls           bool
+	curIndex             int
+	lastContentType      schema.ContentBlockType
+	lastContentPartIndex int
+	lastToolCallIndex    int
+	started              bool
+	inToolCalls          bool
 }
 
 func newChunkConverter() *chunkConverter {
@@ -375,6 +375,10 @@ func imageBlockToInputPart(img *schema.UserInputImage, extra map[string]any) sch
 		Extra: extra,
 	}
 
+	if img.FileID != "" {
+		part.Image.FileID = &img.FileID
+	}
+
 	if img.URL != "" {
 		part.Image.URL = &img.URL
 	} else if img.Base64Data != "" {
@@ -395,6 +399,10 @@ func audioBlockToInputPart(audio *schema.UserInputAudio, extra map[string]any) s
 		Extra: extra,
 	}
 
+	if audio.FileID != "" {
+		part.Audio.FileID = &audio.FileID
+	}
+
 	if audio.URL != "" {
 		part.Audio.URL = &audio.URL
 	} else if audio.Base64Data != "" {
@@ -413,6 +421,10 @@ func videoBlockToInputPart(video *schema.UserInputVideo, extra map[string]any) s
 			},
 		},
 		Extra: extra,
+	}
+
+	if video.FileID != "" {
+		part.Video.FileID = &video.FileID
 	}
 
 	if video.URL != "" {

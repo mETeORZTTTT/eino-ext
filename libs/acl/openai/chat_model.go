@@ -414,6 +414,10 @@ func buildMessageFromUserInputMultiContent(inMsg *schema.Message) (openai.ChatCo
 			if part.Audio == nil {
 				return comMessage, errors.New("the 'audio' field is required for parts of type 'audio_url'")
 			}
+			if part.Audio.FileID != nil {
+				return comMessage, fmt.Errorf("audio FileID is not supported by this Chat adapter")
+			}
+
 			if part.Audio.Base64Data != nil {
 				format, ok := mimeType2AudioFormat[part.Audio.MIMEType]
 				if !ok {
@@ -435,6 +439,10 @@ func buildMessageFromUserInputMultiContent(inMsg *schema.Message) (openai.ChatCo
 		case schema.ChatMessagePartTypeImageURL:
 			if part.Image == nil {
 				return comMessage, errors.New("the 'image' field is required for parts of type 'image_url'")
+			}
+
+			if part.Image.FileID != nil {
+				return comMessage, fmt.Errorf("image FileID is not supported by this Chat adapter")
 			}
 
 			if part.Image.URL != nil {
@@ -464,6 +472,10 @@ func buildMessageFromUserInputMultiContent(inMsg *schema.Message) (openai.ChatCo
 			if part.Video == nil {
 				return comMessage, errors.New("the 'video' field is required for parts of type 'video_url'")
 			}
+			if part.Video.FileID != nil {
+				return comMessage, fmt.Errorf("video FileID is not supported by this Chat adapter")
+			}
+
 			if part.Video.URL != nil {
 				comMessage.MultiContent = append(comMessage.MultiContent, openai.ChatMessagePart{
 					Type: openai.ChatMessagePartTypeVideoURL,

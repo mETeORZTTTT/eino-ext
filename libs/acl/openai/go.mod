@@ -46,3 +46,6 @@ require (
 	golang.org/x/sys v0.29.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+// Self-review only; replace with a released upstream version before submission.
+replace github.com/cloudwego/eino => github.com/mETeORZTTTT/eino v0.0.0-20261019074619-ff031de9b281

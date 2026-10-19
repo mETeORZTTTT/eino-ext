@@ -57,3 +57,8 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+// Self-review only; replace with a released upstream version before submission.
+replace github.com/cloudwego/eino => github.com/mETeORZTTTT/eino v0.0.0-20261019074619-ff031de9b281
+
+replace github.com/cloudwego/eino-ext/libs/acl/openai => github.com/mETeORZTTTT/eino-ext/libs/acl/openai v0.0.0-20261019061144-cb6ec211beb9
