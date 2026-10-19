@@ -50,3 +50,6 @@ require (
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+// Self-review only; replace with a released upstream version before submission.
+replace github.com/cloudwego/eino => github.com/mETeORZTTTT/eino v0.0.0-20261019052657-5f5144b79417
