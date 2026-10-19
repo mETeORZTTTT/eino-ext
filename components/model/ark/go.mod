@@ -50,3 +50,5 @@ require (
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/volcengine/volcengine-go-sdk => github.com/mETeORZTTTT/volcengine-go-sdk v1.2.47-0.20261019113930-c1a4c6091e82

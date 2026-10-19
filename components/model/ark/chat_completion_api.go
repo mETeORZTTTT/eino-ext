@@ -648,7 +648,22 @@ func (cm *completionAPIChatModel) toArkContent(msg *schema.Message) (*model.Chat
 				if part.Image == nil {
 					return nil, fmt.Errorf("image field must not be nil when Type is ChatMessagePartTypeImageURL in user message")
 				}
-				raw, isBase64, vErr := validateMessagePartCommon(part.Image.MessagePartCommon, "image")
+				if part.Image.URL == nil && part.Image.Base64Data == nil && part.Image.FileID != nil {
+					if err := validateInputFileID(part.Image.MessagePartCommon); err != nil {
+						return nil, err
+					}
+					parts = append(parts, &model.ChatCompletionMessageContentPart{
+						Type: model.ChatCompletionMessageContentPartTypeImageURL,
+						ImageURL: &model.ChatMessageImageURL{
+							FileID: *part.Image.FileID,
+							Detail: model.ImageURLDetail(part.Image.Detail),
+						},
+					})
+					continue
+				}
+				common := part.Image.MessagePartCommon
+				common.FileID = nil // The URL/Base64 branch keeps its existing validation.
+				raw, isBase64, vErr := validateMessagePartCommon(common, "image")
 				if vErr != nil {
 					return nil, vErr
 				}
@@ -667,7 +682,22 @@ func (cm *completionAPIChatModel) toArkContent(msg *schema.Message) (*model.Chat
 				if part.Video == nil {
 					return nil, fmt.Errorf("video field must not be nil when Type is ChatMessagePartTypeVideoURL in user message")
 				}
-				raw, isBase64, vErr := validateMessagePartCommon(part.Video.MessagePartCommon, "video")
+				if part.Video.URL == nil && part.Video.Base64Data == nil && part.Video.FileID != nil {
+					if err := validateInputFileID(part.Video.MessagePartCommon); err != nil {
+						return nil, err
+					}
+					parts = append(parts, &model.ChatCompletionMessageContentPart{
+						Type: model.ChatCompletionMessageContentPartTypeVideoURL,
+						VideoURL: &model.ChatMessageVideoURL{
+							FileID: *part.Video.FileID,
+							FPS:    GetInputVideoFPS(part.Video),
+						},
+					})
+					continue
+				}
+				common := part.Video.MessagePartCommon
+				common.FileID = nil // The URL/Base64 branch keeps its existing validation.
+				raw, isBase64, vErr := validateMessagePartCommon(common, "video")
 				if vErr != nil {
 					return nil, vErr
 				}

@@ -108,6 +108,20 @@ func main() {
 }
 ```
 
+### File references in Chat Completions
+
+Image and video inputs in `UserInputMultiContent` may use `MessagePartCommon.FileID`
+with a model that supports Ark Files. User and tool messages share this conversion.
+The adapter sends `image_url.file_id` or `video_url.file_id`, without a `url` field.
+The reference must be nonempty; the caller is responsible for using an active file
+from the same project as the inference credentials.
+
+The existing URL/Base64 source precedence is preserved. To select a FileID,
+leave both `URL` and `Base64Data` nil. No upload, download, or renewal occurs here.
+This temporary branch requires the companion Go SDK patch that adds the two
+Chat media fields; consuming modules must use the same pinned SDK replacement
+because Go does not inherit dependency-module `replace` directives.
+
 ### Configuration
 
 The `ChatModel` can be configured using the `ark.ChatModelConfig` struct:

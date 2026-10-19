@@ -123,10 +123,10 @@ func TestInputFileID(t *testing.T) {
 	})
 }
 
-func TestChatFileIDUnsupported(t *testing.T) {
+func TestChatAudioFileIDUnsupported(t *testing.T) {
 	id := "file-123"
-	if _, _, err := validateMessagePartCommon(schema.MessagePartCommon{FileID: &id}, "image"); err == nil {
-		t.Fatal("the pinned Chat SDK cannot represent FileID")
+	if _, _, err := validateMessagePartCommon(schema.MessagePartCommon{FileID: &id}, "audio"); err == nil {
+		t.Fatal("audio FileID is not part of the image/video Chat patch")
 	}
 }
 
