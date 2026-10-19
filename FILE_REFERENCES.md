@@ -53,7 +53,7 @@ The local server returns a file-expiry error to check that it reaches callers.
 No live-provider request or billable model invocation is made by these tests.
 
 ```sh
-go test -gcflags='all=-N -l' ./...
+GOWORK=off go test -gcflags='all=-N -l' ./...
 ```
 
 Run the command in `components/model/ark`, `components/model/agenticark`,

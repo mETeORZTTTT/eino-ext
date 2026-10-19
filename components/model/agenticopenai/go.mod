@@ -60,3 +60,5 @@ require (
 
 // Self-review only; replace with a released upstream version before submission.
 replace github.com/cloudwego/eino => github.com/mETeORZTTTT/eino v0.0.0-20261019052657-5f5144b79417
+
+replace github.com/cloudwego/eino-ext/libs/acl/openai => github.com/mETeORZTTTT/eino-ext/libs/acl/openai v0.0.0-20261019061144-cb6ec211beb9
